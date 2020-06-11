@@ -1,3 +1,6 @@
+<?php
+$allErrors = $data;
+?>
 <form action="register" method="post">
     <div class="container">
         <h1>Register</h1>
@@ -25,9 +28,12 @@
     <div class="container signin">
         <p>Already have an account? <a href="#">Sign in</a>.</p>
     </div>
+
+    <ul>
+        <? foreach ($allErrors as $error):?>
+            <li>
+                <?=$error[0];?>
+            </li>
+        <? endforeach;?>
+    </ul>
 </form>
-<?//if ($this->isFullRegInf):?>
-<!--    <pre>Регистрация прошла успешно!</pre>-->
-<?// else :?>
-<!--    <pre>Неверно введены email или пароль</pre>-->
-<?// endif; ?>

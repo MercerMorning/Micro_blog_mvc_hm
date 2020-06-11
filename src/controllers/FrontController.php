@@ -8,18 +8,33 @@ use Base\DB\DB;
 
 class FrontController extends BaseController
 {
+    private function validationRegisterForm(array $post)
+    {
+        $result = [];
+        if (empty($post['name'])) {
+            $result[] = 'name is empty';
+        }
+        if (empty($post['email'])) {
+            $result[] = 'email is empty';
+        }
+        if (empty($post['password'])) {
+            $result[] = 'password is empty';
+        }
+        if (mb_strlen($post['password']) < 4) {
+            $result[] = 'password must be more than 4 characters';
+        }
+        if ($post['password'] !== $post['password2']) {
+            $result[] = 'passwords don\'t match';
+        }
+        return $result;
+    }
 
     public function register()
     {
-        $this->render('front\register');
-        if (!$_POST["name"]
-            || !$_POST["email"]
-            || !$_POST["password"]
-            || !$_POST["password-repeat"]
-            || !strlen($_POST["password"]) >= 4
-            || !strlen($_POST["password-repeat"]) >= 4
-            || !$_POST["password"] == $_POST["password-repeat"]) {
-            return false;
+        $error = $this->validationRegisterForm($_POST);
+        if ($error) {
+            $this->render('front\register', ['error' => $error]);
+            return 0;
         }
         $userModel = new User();
         $user = $userModel->getUser($_POST["email"]);
@@ -72,14 +87,21 @@ class FrontController extends BaseController
             $allMessages = $messageModel->getAllMessages();
             $this->render('front\messageAdmin', $allMessages);
             $messageModel->addMessage($message, $_POST["text"]);
-            //$messageModel->deleteMessage($_POST["id"]);
+            if (!empty($_FILES["userfile"]["tmp_name"])) {
+                $messageModel->setImageToMessage($_FILES);
+            }
+            $messageModel->deleteMessage(key($_GET));
         } elseif ($messageModel->quest()) {
             return false;
         } else {
+            $userModel = new User();
             $allMessages = $messageModel->getAllMessages();
+            $allUsers = $userModel->getUser();
+
             $this->render('front\message', $allMessages);
             $messageModel->addMessage($message, $_POST["text"]);
         }
+
         //print($messageModel->getAllMessagesById(218));
     }
 
