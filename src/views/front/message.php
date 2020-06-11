@@ -1,6 +1,5 @@
 <?php
 $allMesages = $data;
-print_r($allMesages);
 ?>
 
 <form action="message" method="post">
@@ -8,7 +7,9 @@ print_r($allMesages);
         <label>
             <input type="text" placeholder="Enter Text" name="text" required>
         </label>
-        <input name="userfile" type="file" /><br>
+        <label>
+            <input name="userfile" type="file" /><br>
+        </label>
         <button type="submit" class="registerbtn">Send</button>
 </form>
 
@@ -17,10 +18,9 @@ print_r($allMesages);
         <li>
             <pre><?= $inf["text"]?></pre>
             <pre><?= $inf["date"]?></pre>
-            <pre><?= $inf["user_id"]?></pre>
-            <? if (file_exists(__DIR__ . "../../../images/" . $inf["id"] . ".jpg")):?>
-<!--                <img src="--><?//=__DIR__?><!--../../../../image.php/?id=--><?//=$inf["id"];?><!--" alt="image">-->
-            <img src=<?__DIR__ . "../../../../images/" . $this->getLastInsertID() . ".jpg"?>>
+            <pre><?= $inf["name"]?></pre>
+            <? if (file_exists(PROJECT_PATH . "/images/" . $inf["id"] . ".jpg")):?>
+                <img src="<?=PROJECT_PATH . "/images/" . $inf["id"] . ".jpg"?>">
             <? endif; ?>
         </li>
     <? endforeach;?>
